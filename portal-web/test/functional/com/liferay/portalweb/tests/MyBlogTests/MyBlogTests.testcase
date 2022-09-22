@@ -4,8 +4,6 @@ definition {
 	property testray.main.component.name = "Blogs";
 
 	setUp {
-
-        //task ("")
 		TestCase.setUpPortalInstance();
 
 		User.firstLoginPG();
@@ -22,32 +20,34 @@ definition {
 
 		Navigator.gotoPage(pageName = "Page Name");
 
-        Blogs.addEntry(
+		Blogs.addEntry(
 			entryContent = "Blogs Entry Content",
 			entrySubtitle = "Blogs Entry Subtitle",
 			entryTitle = "Blogs Entry Test");
 	}
 
 	tearDown {
+		BlogsEntry.tearDownCP();
 
-        BlogsEntry.tearDownCP();
-
-        ProductMenu.gotoPortlet(
+		ProductMenu.gotoPortlet(
 			category = "Site Builder",
 			portlet = "Pages");
 
-        PagesAdmin.deletePage(pageName = "Page Name");
+		PagesAdmin.deletePage(pageName = "Page Name");
 	}
 
 	@description = "Can Create a Blog"
 	@priority = "5"
 	test CanCreateBlog {
+		task ("Assert the success message") {
+			Alert.viewSuccessMessage();
+		}
 
-		Alert.viewSuccessMessage();
-
-		BlogsEntry.viewEntryPG(
-			entryContent = "Blogs Entry Content",
-			entryTitle = "Blogs Entry Test");
+		task ("Assert the entry insertion") {
+			BlogsEntry.viewEntryPG(
+				entryContent = "Blogs Entry Content",
+				entryTitle = "Blogs Entry Test");
+		}
 	}
 
 	@description = "Can Delete a Blog"
@@ -58,7 +58,6 @@ definition {
 	@description = "Can Edit a Blog"
 	@priority = "5"
 	test CanEditBlog {
-
 	}
 
 	@description = "Can Search Blogs"

@@ -263,12 +263,13 @@ definition {
 			locator1 = "MenuItem#ANY_MENU_ITEM");
 	}
 
-	// macro assertLanguageEntry {
-	//  	AssertElementPresent(
-	//  		key_value = "${value}",
-	//  		key_valueB = "${valueB}",
-	//  		key_language_symbol = "${language_symbol}",
-	//  		locator1 = "Form#ENTRY_ROW_VALUES");
-	//  }
+	//macro assertLanguageEntry {
+	//	AssertElementPresent(
+	//		key_value = "${value}",
+	//		key_valueB = "${valueB}",
+	//		key_language_symbol = "${language_symbol}",
+	//		locator1 = "Form#ENTRY_ROW_VALUES");
+	//}
+
 
 }
