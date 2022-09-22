@@ -4,6 +4,8 @@ definition {
 	property testray.main.component.name = "Blogs";
 
 	setUp {
+
+        //task ("")
 		TestCase.setUpPortalInstance();
 
 		User.firstLoginPG();
@@ -19,23 +21,27 @@ definition {
 			widgetName = "Blogs");
 
 		Navigator.gotoPage(pageName = "Page Name");
+
+        Blogs.addEntry(
+			entryContent = "Blogs Entry Content",
+			entrySubtitle = "Blogs Entry Subtitle",
+			entryTitle = "Blogs Entry Test");
 	}
 
 	tearDown {
-		var testPortalInstance = PropsUtil.get("test.portal.instance");
 
-		if ("${testPortalInstance}" == "true") {
-			PortalInstances.tearDownCP();
-		}
+        BlogsEntry.tearDownCP();
+
+        ProductMenu.gotoPortlet(
+			category = "Site Builder",
+			portlet = "Pages");
+
+        PagesAdmin.deletePage(pageName = "Page Name");
 	}
 
 	@description = "Can Create a Blog"
 	@priority = "5"
 	test CanCreateBlog {
-		Blogs.addEntry(
-			entryContent = "Blogs Entry Content",
-			entrySubtitle = "Blogs Entry Subtitle",
-			entryTitle = "Blogs Entry Test");
 
 		Alert.viewSuccessMessage();
 
@@ -52,6 +58,7 @@ definition {
 	@description = "Can Edit a Blog"
 	@priority = "5"
 	test CanEditBlog {
+
 	}
 
 	@description = "Can Search Blogs"
