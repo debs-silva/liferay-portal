@@ -1,13 +1,5 @@
 definition {
 
-	macro assertLanguageEntry {
-		AssertElementPresent(
-			key_language_symbol = "${language_symbol}",
-			key_value = "${value}",
-			key_valueB = "${valueB}",
-			locator1 = "Form#ENTRY_ROW_VALUES");
-	}
-
 	macro changeDisplayStyle {
 		WaitForPageLoad();
 
@@ -270,5 +262,13 @@ definition {
 			key_menuItem = "${menuItem}",
 			locator1 = "MenuItem#ANY_MENU_ITEM");
 	}
+
+	// macro assertLanguageEntry {
+	//  	AssertElementPresent(
+	//  		key_value = "${value}",
+	//  		key_valueB = "${valueB}",
+	//  		key_language_symbol = "${language_symbol}",
+	//  		locator1 = "Form#ENTRY_ROW_VALUES");
+	//  }
 
 }
