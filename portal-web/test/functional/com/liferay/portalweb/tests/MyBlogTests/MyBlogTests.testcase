@@ -8,32 +8,46 @@ definition {
 
 		User.firstLoginPG();
 
-		JSONLayout.addPublicLayout(
-			groupName = "Guest",
-			layoutName = "Page Name");
+		task ("Create a page") {
+			JSONLayout.addPublicLayout(
+				groupName = "Guest",
+				layoutName = "Page Name");
+		}
 
-		JSONLayout.addWidgetToPublicLayout(
-			column = "1",
-			groupName = "Guest",
-			layoutName = "Page Name",
-			widgetName = "Blogs");
+		task ("Add a Blogs widget on the page") {
+			JSONLayout.addWidgetToPublicLayout(
+				column = "1",
+				groupName = "Guest",
+				layoutName = "Page Name",
+				widgetName = "Blogs");
+		}
 
-		Navigator.gotoPage(pageName = "Page Name");
+		task ("Create a entry") {
+			Navigator.gotoPage(pageName = "Page Name");
 
-		Blogs.addEntry(
-			entryContent = "Blogs Entry Content",
-			entrySubtitle = "Blogs Entry Subtitle",
-			entryTitle = "Blogs Entry Test");
+			Blogs.addEntry(
+				entryContent = "Blogs Entry Content",
+				entrySubtitle = "Blogs Entry Subtitle",
+				entryTitle = "Blogs Entry Test");
+		}
 	}
 
 	tearDown {
-		BlogsEntry.tearDownCP();
+		task ("Delete the entries") {
+			BlogsEntry.tearDownCP();
+		}
 
-		ProductMenu.gotoPortlet(
-			category = "Site Builder",
-			portlet = "Pages");
+		task ("Go to the portlet Pages and delete the page that was created") {
+			ProductMenu.gotoPortlet(
+				category = "Site Builder",
+				portlet = "Pages");
 
-		PagesAdmin.deletePage(pageName = "Page Name");
+			PagesAdmin.deletePage(pageName = "Page Name");
+		}
+
+		task ("Log out") {
+			User.logoutPG();
+		}
 	}
 
 	@description = "Can Create a Blog"
