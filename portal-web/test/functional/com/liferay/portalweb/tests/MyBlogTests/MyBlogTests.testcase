@@ -28,7 +28,7 @@ definition {
 			Blogs.addEntry(
 			entryContent = "Blogs Entry Content",
 			entrySubtitle = "Blogs Entry Subtitle",
-			entryTitle = "Blogs Entry Test");
+			entryTitle = "Blogs Entry 1");
 		}
 	}
 
@@ -61,13 +61,34 @@ definition {
 		task ("Assert the entry insertion") {
 			BlogsEntry.viewEntryPG(
 				entryContent = "Blogs Entry Content",
-				entryTitle = "Blogs Entry Test");
+				entryTitle = "Blogs Entry 1");
 		}
 	}
 
 	@description = "Can Delete a Blog"
 	@priority = "5"
 	test CanDeleteBlog {
+
+		task("Create a new entry") {
+			Blogs.addEntry(
+				entryContent = "Blogs Content 2",
+				entrySubtitle = "Blogs Subtitle 2",
+				entryTitle = "Blogs Entry 2");
+		}
+
+		task ("Move a entry to the recycle bin") {
+			BlogsEntry.moveToRecycleBinPG(
+				assetType = "Blogs Entry",
+				entryContent = "Blogs Content 2",
+				entryTitle = "Blogs Entry 2",
+				entrySubtitle = "Blogs Subtitle 2");
+		}
+
+		task("Assert if the other entry was not deleted"){
+			BlogsEntry.viewEntryPG(
+				entryContent = "Blogs Entry Content",
+				entryTitle = "Blogs Entry 1");
+		}
 	}
 
 	@description = "Can Edit a Blog"
