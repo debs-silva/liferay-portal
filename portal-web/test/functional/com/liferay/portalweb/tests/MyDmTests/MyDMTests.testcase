@@ -1,46 +1,98 @@
 @component-name = "portal-document-management"
 definition {
-    property testray.main.component.name = "Document Management";
 
-    setUp {
-        TestCase.setUpPortalInstance();
+	property testray.main.component.name = "Document Management";
 
-        User.firstLoginPG();
+	setUp {
+		TestCase.setUpPortalInstance();
 
-        Navigator.openURL();
-    }
+		User.firstLoginPG();
 
-     tearDown {
-		var testPortalInstance = PropsUtil.get("test.portal.instance");
-
-		if ("${testPortalInstance}" == "true") {
-			PortalInstances.tearDownCP();
+		task ("Create a page") {
+			JSONLayout.addPublicLayout(
+				groupName = "Guest",
+				layoutName = "Documents and Media Page");
 		}
-     }
 
-    @description = "Can Create a Documents and Media"
-    @priority = "5"
-    test CanCreateDM {
+		task ("Add a DM widget on the page") {
+			JSONLayout.addWidgetToPublicLayout(
+				column = "1",
+				groupName = "Guest",
+				layoutName = "Documents and Media Page",
+				widgetName = "Documents and Media");
+		}
 
-    }
+		task ("Go the page that was created") {
+			Navigator.gotoPage(pageName = "Documents and Media Page");
+		}
+	}
 
-    @description = "Can Edit a Documents and Media"
-    @priority = "5"
-    test CanEditDM {
+	tearDown {
+		task ("Go the Documents and Media page and delete the DM that was uploaded") {
+			ProductMenu.gotoPortlet(
+				category = "Content & Data",
+				portlet = "Documents and Media");
 
+			DMDocument.deleteCP(dmDocumentTitle = "DM Title");
+		}
 
-    }
-    @description = "Can Delete a Documents and Media"
-    @priority = "5"
-    test CanDeleteDM {
+		task ("Go to Pages and delete the 'Documents and Media Page' page that was created") {
+			ProductMenu.gotoPortlet(
+				category = "Site Builder",
+				portlet = "Pages");
 
+			PagesAdmin.deletePage(pageName = "Documents and Media Page");
+		}
 
-    }
-    @description = "Can Download a Documents and Media"
-    @priority = "5"
-    test CanDownloadDM {
+		task ("Log out") {
+			User.logoutPG();
+		}
+	}
 
+	@description = "Can Create a Documents and Media"
+	@priority = "5"
+	test CanCreateDM {
+		task ("Go to Documents and Media page") {
+			ProductMenu.gotoPortlet(
+				category = "Content & Data",
+				portlet = "Documents and Media");
+		}
 
-    }
+		task ("Upload a file") {
+			JSONDocument.addFileWithUploadedFile(
+				dmDocumentDescription = "DM Description",
+				dmDocumentTitle = "DM Title",
+				groupName = "Guest",
+				mimeType = "image/jpeg",
+				sourceFileName = "imagem.jpg");
+		}
+
+		task ("Go to the page that was created on setUp") {
+			Navigator.gotoPage(pageName = "Documents and Media Page");
+		}
+
+		task ("Assert tthe file that was uploaded") {
+			DMDocument.viewPG(
+				dmDocumentDescription = "DM Description",
+				dmDocumentTitle = "DM Title");
+		}
+	}
+
+	@description = "Can Delete a Documents and Media"
+	@priority = "5"
+	test CanDeleteDM {
+	}
+
+	@description = "Can Download a Documents and Media"
+	@priority = "5"
+	test CanDownloadDM {
+	}
+
+	@description = "Can Edit a Documents and Media"
+	@priority = "5"
+	test CanEditDM {
+
+        
+	}
 
 }
