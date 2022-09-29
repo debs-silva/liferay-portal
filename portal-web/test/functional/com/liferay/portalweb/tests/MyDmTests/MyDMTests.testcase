@@ -33,7 +33,7 @@ definition {
 				category = "Content & Data",
 				portlet = "Documents and Media");
 
-			DMDocument.deleteCP(dmDocumentTitle = "DM Title");
+			DMDocument.deleteCP(dmDocumentTitle = "New Title");
 		}
 
 		task ("Go to Pages and delete the 'Documents and Media Page' page that was created") {
@@ -49,50 +49,43 @@ definition {
 		}
 	}
 
-	@description = "Can Create a Documents and Media"
+	@description = "Can Edit a Documents and Media"
 	@priority = "5"
-	test CanCreateDM {
+	test CanEditDM {
+		task ("Upload a file") {
+			JSONDocument.addFileWithUploadedFile(
+				dmDocumentDescription = "DM Description",
+				dmDocumentTitle = "DM Title",
+				groupName = "Guest",
+				mimeType = "application/pdf",
+				sourceFileName = "Document_1.pdf");
+		}
+
 		task ("Go to Documents and Media page") {
 			ProductMenu.gotoPortlet(
 				category = "Content & Data",
 				portlet = "Documents and Media");
 		}
 
-		task ("Upload a file") {
-			JSONDocument.addFileWithUploadedFile(
-				dmDocumentDescription = "DM Description",
+		task ("Edit file that was uploaded") {
+			DMDocument.editCP(
+				dmDocumentDescriptionEdit = "DM Description Edit",
+				dmDocumentFileEdit = "Commerce_Black.jpg",
+				dmDocumentFileNameEdit = "Commerce_Black.jpg",
 				dmDocumentTitle = "DM Title",
-				groupName = "Guest",
-				mimeType = "image/jpeg",
-				sourceFileName = "imagem.jpg");
+				dmDocumentTitleEdit = "New Title");
 		}
 
 		task ("Go to the page that was created on setUp") {
 			Navigator.gotoPage(pageName = "Documents and Media Page");
 		}
 
-		task ("Assert tthe file that was uploaded") {
+		task ("Assert the file that was uploaded") {
 			DMDocument.viewPG(
-				dmDocumentDescription = "DM Description",
-				dmDocumentTitle = "DM Title");
+				dmDocumentDescription = "DM Description Edit",
+				dmDocumentFileName = "Commerce_Black.jpg",
+				dmDocumentTitle = "New Title");
 		}
-	}
-
-	@description = "Can Delete a Documents and Media"
-	@priority = "5"
-	test CanDeleteDM {
-	}
-
-	@description = "Can Download a Documents and Media"
-	@priority = "5"
-	test CanDownloadDM {
-	}
-
-	@description = "Can Edit a Documents and Media"
-	@priority = "5"
-	test CanEditDM {
-
-        
 	}
 
 }
