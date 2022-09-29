@@ -28,20 +28,16 @@ definition {
 	}
 
 	tearDown {
-		task ("Go the Documents and Media page and delete the DM that was uploaded") {
-			ProductMenu.gotoPortlet(
-				category = "Content & Data",
-				portlet = "Documents and Media");
-
-			DMDocument.deleteCP(dmDocumentTitle = "New Title");
+		task ("Delete the DM that was uploaded") {
+			JSONDocument.moveToRecycleBin(
+				dmDocumentTitle = "New Title",
+				groupName = "Guest");
 		}
 
-		task ("Go to Pages and delete the 'Documents and Media Page' page that was created") {
-			ProductMenu.gotoPortlet(
-				category = "Site Builder",
-				portlet = "Pages");
-
-			PagesAdmin.deletePage(pageName = "Documents and Media Page");
+		task ("Delete the 'Documents and Media Page' page that was created") {
+			JSONLayout.deletePublicLayout(
+				groupName = "Guest",
+				layoutName = "Documents and Media Page");
 		}
 
 		task ("Log out") {
