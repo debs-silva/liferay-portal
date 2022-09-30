@@ -1,46 +1,92 @@
 @component-name = "portal-document-management"
 definition {
-    property testray.main.component.name = "Document Management";
 
-    setUp {
-        TestCase.setUpPortalInstance();
+	property testray.main.component.name = "Document Management";
 
-        User.firstLoginPG();
+	setUp {
+		TestCase.setUpPortalInstance();
 
-        Navigator.openURL();
-    }
+		User.firstLoginPG();
 
-     tearDown {
-		var testPortalInstance = PropsUtil.get("test.portal.instance");
-
-		if ("${testPortalInstance}" == "true") {
-			PortalInstances.tearDownCP();
+		task ("Create a page") {
+			JSONLayout.addPublicLayout(
+				groupName = "Guest",
+				layoutName = "Documents and Media Page");
 		}
-     }
 
-    @description = "Can Create a Documents and Media"
-    @priority = "5"
-    test CanCreateDM {
+		task ("Add a DM widget on the page") {
+			JSONLayout.addWidgetToPublicLayout(
+				column = "1",
+				groupName = "Guest",
+				layoutName = "Documents and Media Page",
+				widgetName = "Documents and Media");
+		}
 
-    }
+		task ("Go the page that was created") {
+			Navigator.gotoPage(pageName = "Documents and Media Page");
+		}
 
-    @description = "Can Edit a Documents and Media"
-    @priority = "5"
-    test CanEditDM {
+		task ("Upload DMTest1 and DMTest2") {
+			JSONDocument.addFileWithUploadedFile(
+				dmDocumentDescription = "DMTest1 Description",
+				dmDocumentTitle = "DMTest1",
+				groupName = "Guest",
+				mimeType = "application/pdf",
+				sourceFileName = "Document_1.pdf");
 
+			JSONDocument.addFileWithUploadedFile(
+				dmDocumentDescription = "DMTest2 Description",
+				dmDocumentTitle = "DMTest2",
+				groupName = "Guest",
+				mimeType = "image/jpeg",
+				sourceFileName = "Commerce_Black.jpg");
+		}
+	}
 
-    }
-    @description = "Can Delete a Documents and Media"
-    @priority = "5"
-    test CanDeleteDM {
+	tearDown {
+		task ("Delete the DMs that were uploaded") {
+			JSONDocument.moveToRecycleBin(
+				dmDocumentTitle = "DMTest1",
+				groupName = "Guest");
 
+			JSONDocument.moveToRecycleBin(
+				dmDocumentTitle = "DMTest2",
+				groupName = "Guest");
+		}
 
-    }
-    @description = "Can Download a Documents and Media"
-    @priority = "5"
-    test CanDownloadDM {
+		task ("Delete the 'Documents and Media Page' page that was created") {
+			JSONLayout.deletePublicLayout(
+				groupName = "Guest",
+				layoutName = "Documents and Media Page");
+		}
 
+		task ("Log out") {
+			User.logoutPG();
+		}
+	}
 
-    }
+	@description = "Can Delete a Documents and Media"
+	@priority = "5"
+	test CanDownloadDM {
+		task ("Go to Documents and Media") {
+			ProductMenu.gotoPortlet(
+				category = "Content & Data",
+				portlet = "Documents and Media");
+		}
+
+		task ("Download DMTest1") {
+			DMDocument.downloadCP(
+				dmDocumentSize = "12 KB",
+				dmDocumentTitle = "DMTest1");
+		}
+
+		task ("Assert if the DMTest1 was downloaded") {
+			ImportExport.assertDownloadedFileName(downloadedFile = "Document_1.pdf");
+		}
+
+		task ("Assert if the DMTest2 was not downloaded") {
+			DMDocument.assertNoFileNameFromTempFolder(fileName = "Commerce_Black.jpg");
+		}
+	}
 
 }
