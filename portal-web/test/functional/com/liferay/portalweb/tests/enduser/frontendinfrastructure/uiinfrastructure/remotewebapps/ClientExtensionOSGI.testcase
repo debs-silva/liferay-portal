@@ -10,12 +10,6 @@ definition {
 		TestCase.setUpPortalInstance();
 
 		User.firstLoginPG();
-
-        task ("Given config file for client extension of type custom element created") {
-			ClientExtension.createGlobalVariableClientExtensionType(type = "customElement");
-
-			ClientExtension.checkConfigFileCreatedProperly();
-		}
 	}
 
 	tearDown {
@@ -24,23 +18,13 @@ definition {
 		if ("${testPortalInstance}" == "true") {
 			PortalInstances.tearDownCP();
 		}
-		else {
-			Navigator.gotoPage(pageName = "Home");
+	}
 
-			while (IsElementPresent(locator1 = "Navigation#ANY_SITE_NAV_BUT_HOME")) {
-				var layoutName = selenium.getText("Navigation#ANY_SITE_NAV_BUT_HOME");
-
-				JSONLayout.deletePublicLayout(
-					groupName = "Guest",
-					layoutName = "${layoutName}");
-
-				Navigator.gotoPage(pageName = "Home");
-
-				PortalInstances.tearDownCP();
-			}
-
-			ClientExtension.tearDownConfig();
-		}
+	@description = "LPS-169554"
+	@priority = "4"
+	test FieldsAreNotEditableWhenAccessed {
+		property custom.element.client.extension.created = "true";
+		property test.name.skip.portal.instance = "ClientExtensionOSGI#FieldsAreNotEditableWhenAccessed";
 	}
 
 	@description = "LPS-169551"
@@ -48,30 +32,65 @@ definition {
 	test HasViewAction {
 		property custom.element.client.extension.created = "true";
 		property test.name.skip.portal.instance = "ClientExtensionOSGI#HasViewAction";
-
-        // TODO LPS-169551 HasViewAction pending implementation
-
 	}
 
-    @description = "LPS-169552 "
+	@description = "LPS-169552 "
 	@priority = "3"
 	test ViewActionCanDisplayFieldsAsNotEditable {
 		property custom.element.client.extension.created = "true";
 		property test.name.skip.portal.instance = "ClientExtensionOSGI#ViewActionCanDisplayFieldsAsNotEditable";
 
-        // TODO LPS-169552 ViewActionCanDisplayFieldsAsNotEditable pending implementation
+		RemoteApps.goToRemoteAppsPortlet();
 
+		Button.click(button = "View");
+
+		AssertTextEquals(
+			key_id = "ClientExtensionAdminPortlet_name",
+			locator1 = "RemoteAppsEntry#URL",
+			value1 = "Vanilla Counter");
+
+		AssertTextEquals(
+			key_text = "_description",
+			locator1 = "TextArea#ANY",
+			value1 = "Custom Element Description");
+
+		AssertTextEquals(
+			key_id = "ClientExtensionAdminPortlet_typeLabel",
+			locator1 = "RemoteAppsEntry#URL",
+			value1 = "Custom Element");
+
+		AssertTextEquals(
+			key_text = "CSS URLs",
+			locator1 = "TextArea#ANY",
+			value1 = "https://liferay.github.io/liferay-frontend-projects/index.css");
+
+		AssertTextEquals(
+			key_id = "ClientExtensionAdminPortlet_Friendly-URL-Mapping",
+			locator1 = "RemoteAppsEntry#URL",
+			value1 = "vanilla");
+
+		AssertTextEquals(
+			key_id = "ClientExtensionAdminPortlet_HTML-Element-Name",
+			locator1 = "RemoteAppsEntry#URL",
+			value1 = "vanilla-counter");
+
+		FormFields.viewCheckboxChecked(fieldName = "Instanceable");
+
+		AssertTextEquals(
+			key_id = "ClientExtensionAdminPortlet_Portlet-Category-Name",
+			locator1 = "RemoteAppsEntry#URL",
+			value1 = "category.remote-apps");
+
+		AssertTextEquals(
+			key_text = "_URLs",
+			locator1 = "TextArea#ANY",
+			value1 = "https://liferay.github.io/liferay-frontend-projects/vanilla-counter/index.js");
+
+		FormFields.viewCheckboxChecked(fieldName = "Use ES Modules");
+
+		AssertTextEquals(
+			locator1 = "RemoteAppsEntry#REMOTE_APPS_PROPERTIES",
+			value1 = "test-data-user=test");
 	}
-
-    @description = "LPS-169554"
-	@priority = "4"
-	test FieldsAreNotEditableWhenAccessed {
-		property custom.element.client.extension.created = "true";
-		property test.name.skip.portal.instance = "ClientExtensionOSGI#FieldsAreNotEditableWhenAccessed";
-
-        // TODO LPS-169554 FieldsAreNotEditableWhenAccessed pending implementation
-
-	}
-
 
 }
